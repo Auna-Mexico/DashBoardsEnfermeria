@@ -1,0 +1,335 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f4f6f8; font-family: system-ui, -apple-system, sans-serif; color: #3D3935; padding: 24px; }
+
+  h1 { color: #00B0CA; font-size: 26px; margin-bottom: 4px; }
+  .subtitle { color: #BBBCBC; font-size: 14px; margin-bottom: 24px; }
+
+  .section-title { font-size: 18px; font-weight: 700; color: #3D3935; margin: 32px 0 16px; border-left: 4px solid #00B0CA; padding-left: 12px; }
+
+  /* KPI Cards */
+  .kpi-row { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .kpi { background: #fff; border-radius: 8px; padding: 16px 20px; flex: 1; min-width: 140px; border: 1px solid #eee; }
+  .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 4px; }
+  .kpi-value { font-size: 32px; font-weight: 700; font-family: monospace; }
+  .kpi-sub { font-size: 12px; color: #888; margin-top: 2px; }
+  .kpi-turquesa .kpi-value { color: #00B0CA; }
+  .kpi-naranja .kpi-value { color: #FF6900; }
+  .kpi-verde .kpi-value { color: #BED600; }
+  .kpi-gris .kpi-value { color: #3D3935; }
+
+  /* Charts */
+  .chart-row { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .chart-card { background: #fff; border-radius: 8px; padding: 20px; border: 1px solid #eee; flex: 1; min-width: 300px; }
+  .chart-card h3 { font-size: 14px; color: #3D3935; margin-bottom: 16px; }
+
+  /* Horizontal Bars */
+  .hbar { margin-bottom: 12px; }
+  .hbar-label { font-size: 12px; color: #666; margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .hbar-track { background: #f0f0f0; border-radius: 4px; height: 28px; position: relative; overflow: hidden; }
+  .hbar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; color: #fff; font-weight: 600; }
+
+  /* Stacked Bars */
+  .sbar { display: flex; height: 28px; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+  .sbar-seg { display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; font-weight: 600; min-width: 0; }
+  .sbar-row { margin-bottom: 10px; }
+  .sbar-row-label { font-size: 12px; color: #666; margin-bottom: 3px; }
+
+  /* Donut */
+  .donut-container { display: flex; align-items: center; justify-content: center; gap: 24px; }
+  .donut-svg { width: 180px; height: 180px; }
+  .donut-legend { font-size: 13px; }
+  .donut-legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .donut-legend-dot { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+
+  /* Stacked Column Chart */
+  .col-chart { display: flex; align-items: flex-end; gap: 8px; height: 180px; padding-top: 10px; }
+  .col-group { flex: 1; display: flex; flex-direction: column; align-items: center; }
+  .col-stack { display: flex; flex-direction: column-reverse; width: 100%; }
+  .col-seg { width: 100%; }
+  .col-label { font-size: 10px; color: #888; margin-top: 4px; text-align: center; }
+  .col-total { font-size: 10px; font-weight: 700; color: #3D3935; text-align: center; margin-bottom: 2px; }
+
+  /* Grouped Bar */
+  .gbar-group { margin-bottom: 14px; }
+  .gbar-group-label { font-size: 12px; color: #666; margin-bottom: 4px; }
+  .gbar-bars { display: flex; flex-direction: column; gap: 3px; }
+  .gbar-bar { display: flex; align-items: center; gap: 6px; }
+  .gbar-bar-fill { height: 18px; border-radius: 3px; display: flex; align-items: center; padding-left: 6px; }
+  .gbar-bar-val { font-size: 11px; font-weight: 600; color: #3D3935; font-family: monospace; }
+
+  /* Legend */
+  .legend { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #666; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { text-align: center; color: #fff; background: #00B0CA; font-weight: 600; padding: 8px 6px; }
+  td { padding: 6px; text-align: center; border-bottom: 1px solid #eee; }
+  tr:hover td { background: #f5f9fa; }
+  .table-card { background: #fff; border-radius: 8px; padding: 20px; border: 1px solid #eee; margin-bottom: 24px; overflow-x: auto; }
+  .table-card h3 { font-size: 14px; color: #3D3935; margin-bottom: 12px; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0; margin-bottom: 0; }
+  input[type="radio"].tab-input { display: none; }
+  .tab-label { padding: 10px 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid #ddd; border-bottom: none; border-radius: 8px 8px 0 0; background: #eee; color: #888; margin-right: 2px; }
+  #tab-general:checked ~ .tabs .tab-label[for="tab-general"],
+  #tab-dh:checked ~ .tabs .tab-label[for="tab-dh"],
+  #tab-dhe:checked ~ .tabs .tab-label[for="tab-dhe"],
+  #tab-oca:checked ~ .tabs .tab-label[for="tab-oca"] { background: #fff; color: #00B0CA; border-color: #00B0CA; border-bottom: 1px solid #fff; position: relative; z-index: 1; }
+  .tab-content { display: none; background: #fff; border: 1px solid #00B0CA; border-radius: 0 8px 8px 8px; padding: 20px; }
+  #tab-general:checked ~ .tab-content.tc-general,
+  #tab-dh:checked ~ .tab-content.tc-dh,
+  #tab-dhe:checked ~ .tab-content.tc-dhe,
+  #tab-oca:checked ~ .tab-content.tc-oca { display: block; }
+
+  .neg-card { background: #fff8f8; border: 1px solid #f0d0d0; border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+  .neg-sede { font-size: 12px; font-weight: 700; }
+  .neg-text { font-size: 12px; color: #555; margin-top: 4px; }
+  .neg-impact { font-size: 11px; color: #D50032; margin-top: 4px; font-style: italic; }
+</style>
+</head>
+<body>
+
+<h1>Resultados Encuesta Interna de Enfermería</h1>
+<p class="subtitle">Periodo: 21 – 27 de Septiembre 2026 · 209 encuestas · 3 sedes</p>
+
+<!-- KPI Cards -->
+<div class="kpi-row">
+  <div class="kpi kpi-gris">
+    <div class="kpi-label">Total Encuestas</div>
+    <div class="kpi-value">209</div>
+    <div class="kpi-sub">7 días operativos</div>
+  </div>
+  <div class="kpi kpi-turquesa">
+    <div class="kpi-label">Doctors Hospital</div>
+    <div class="kpi-value">79</div>
+    <div class="kpi-sub">37.8%</div>
+  </div>
+  <div class="kpi kpi-naranja">
+    <div class="kpi-label">Doctors Hospital East</div>
+    <div class="kpi-value">87</div>
+    <div class="kpi-sub">41.6%</div>
+  </div>
+  <div class="kpi kpi-verde">
+    <div class="kpi-label">Hospital y Clínica OCA</div>
+    <div class="kpi-value">43</div>
+    <div class="kpi-sub">20.6%</div>
+  </div>
+</div>
+
+<!-- Distribución por Sede + Encuestas por Día -->
+<div class="chart-row">
+  <div class="chart-card" style="max-width:320px;">
+    <h3>Distribución por Sede</h3>
+    <div class="donut-container">
+      <svg class="donut-svg" viewBox="0 0 42 42">
+        <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#00B0CA" stroke-width="5" stroke-dasharray="37.8 62.2" stroke-dashoffset="25"/>
+        <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#FF6900" stroke-width="5" stroke-dasharray="41.6 58.4" stroke-dashoffset="87.2"/>
+        <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#BED600" stroke-width="5" stroke-dasharray="20.6 79.4" stroke-dashoffset="45.6"/>
+        <text x="21" y="20" text-anchor="middle" font-size="4" fill="#3D3935" font-weight="700">209</text>
+        <text x="21" y="24" text-anchor="middle" font-size="2.5" fill="#888">encuestas</text>
+      </svg>
+      <div class="donut-legend">
+        <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#00B0CA"></div>DH — 79 (37.8%)</div>
+        <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#FF6900"></div>DHE — 87 (41.6%)</div>
+        <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#BED600"></div>OCA — 43 (20.6%)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="flex:2;">
+    <h3>Encuestas por Día Operativo y Sede</h3>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#00B0CA"></div>DH</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#FF6900"></div>DHE</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#BED600"></div>OCA</div>
+    </div>
+    <div class="col-chart">
+      <div class="col-group"><div class="col-total">21</div><div class="col-stack"><div class="col-seg" style="height:15px;background:#00B0CA;border-radius:3px 3px 0 0;"></div><div class="col-seg" style="height:24px;background:#FF6900;"></div><div class="col-seg" style="height:24px;background:#BED600;border-radius:0 0 3px 3px;"></div></div><div class="col-label">Sep 21</div></div>
+      <div class="col-group"><div class="col-total">28</div><div class="col-stack"><div class="col-seg" style="height:24px;background:#00B0CA;border-radius:3px 3px 0 0;"></div><div class="col-seg" style="height:30px;background:#FF6900;"></div><div class="col-seg" style="height:30px;background:#BED600;border-radius:0 0 3px 3px;"></div></div><div class="col-label">Sep 22</div></div>
+      <div class="col-group"><div class="col-total">34</div><div class="col-stack"><div class="col-seg" style="height:39px;background:#00B0CA;border-radius:3px 3px 0 0;"></div><div class="col-seg" style="height:39px;background:#FF6900;"></div><div class="col-seg" style="height:24px;background:#BED600;border-radius:0 0 3px 3px;"></div></div><div class="col-label">Sep 23</div></div>
+      <div class="col-group"><div class="col-total">32</div><div class="col-stack"><div class="col-seg" style="height:39px;background:#00B0CA;border-radius:3px 3px 0 0;"></div><div class="col-seg" style="height:45px;background:#FF6900;"></div><div class="col-seg" style="height:12px;background:#BED600;border-radius:0 0 3px 3px;"></div></div><div class="col-label">Sep 24</div></div>
+      <div class="col-group"><div class="col-total">31</div><div class="col-stack"><div class="col-seg" style="height:36px;background:#00B0CA;border-radius:3px 3px 0 0;"></div><div class="col-seg" style="height:30px;background:#FF6900;"></div><div class="col-seg" style="height:27px;background:#BED600;border-radius:0 0 3px 3px;"></div></div><div class="col-label">Sep 25</div></div>
+      <div class="col-group"><div class="col-total">31</div><div class="col-stack"><div class="col-seg" style="height:27px;background:#00B0CA;border-radius:3px 3px 0 0;"></div><div class="col-seg" style="height:54px;background:#FF6900;"></div><div class="col-seg" style="height:12px;background:#BED600;border-radius:0 0 3px 3px;"></div></div><div class="col-label">Sep 26</div></div>
+      <div class="col-group"><div class="col-total">32</div><div class="col-stack"><div class="col-seg" style="height:57px;background:#00B0CA;border-radius:3px 3px 0 0;"></div><div class="col-seg" style="height:39px;background:#FF6900;border-radius:0 0 3px 3px;"></div></div><div class="col-label">Sep 27</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Tabla por Día, Turno y Sede -->
+<div class="table-card">
+  <h3>Encuestas por Día Operativo, Turno y Sede</h3>
+  <table>
+    <tr><th>Día</th><th colspan="2">Doctors Hospital</th><th colspan="2">Doctors Hospital East</th><th colspan="2">Hospital y Clínica OCA</th><th>Total</th></tr>
+    <tr><td></td><td style="background:#00B0CA;color:#fff;font-size:10px;">7AM-5PM</td><td style="background:#007a8c;color:#fff;font-size:10px;">5PM-7AM</td><td style="background:#FF6900;color:#fff;font-size:10px;">7AM-5PM</td><td style="background:#cc5400;color:#fff;font-size:10px;">5PM-7AM</td><td style="background:#BED600;color:#3D3935;font-size:10px;">7AM-5PM</td><td style="background:#96aa00;color:#fff;font-size:10px;">5PM-7AM</td><td></td></tr>
+    <tr><td>Sep 21</td><td>5</td><td>0</td><td>6</td><td>2</td><td>6</td><td>2</td><td><b>21</b></td></tr>
+    <tr><td>Sep 22</td><td>6</td><td>2</td><td>7</td><td>3</td><td>7</td><td>3</td><td><b>28</b></td></tr>
+    <tr><td>Sep 23</td><td>8</td><td>5</td><td>3</td><td>10</td><td>7</td><td>1</td><td><b>34</b></td></tr>
+    <tr><td>Sep 24</td><td>8</td><td>5</td><td>10</td><td>5</td><td>3</td><td>1</td><td><b>32</b></td></tr>
+    <tr><td>Sep 25</td><td>7</td><td>5</td><td>6</td><td>4</td><td>6</td><td>3</td><td><b>31</b></td></tr>
+    <tr><td>Sep 26</td><td>4</td><td>5</td><td>9</td><td>9</td><td>0</td><td>4</td><td><b>31</b></td></tr>
+    <tr><td>Sep 27</td><td>5</td><td>14</td><td>3</td><td>10</td><td>0</td><td>0</td><td><b>32</b></td></tr>
+    <tr style="background:#f0f8fa;font-weight:700;"><td>Total</td><td>43</td><td>36</td><td>44</td><td>43</td><td>29</td><td>14</td><td><b>209</b></td></tr>
+  </table>
+</div>
+
+<!-- DASHBOARDS POR SEDE (Tabs) -->
+<div class="section-title">Dashboard de Resultados por Pregunta</div>
+
+<input type="radio" name="tabs" id="tab-general" class="tab-input" checked>
+<input type="radio" name="tabs" id="tab-dh" class="tab-input">
+<input type="radio" name="tabs" id="tab-dhe" class="tab-input">
+<input type="radio" name="tabs" id="tab-oca" class="tab-input">
+
+<div class="tabs">
+  <label class="tab-label" for="tab-general">General (209)</label>
+  <label class="tab-label" for="tab-dh">DH (79)</label>
+  <label class="tab-label" for="tab-dhe">DHE (87)</label>
+  <label class="tab-label" for="tab-oca">OCA (43)</label>
+</div>
+
+<!-- TAB GENERAL -->
+<div class="tab-content tc-general">
+  <h3 style="margin-bottom:16px;">Promedios — Todas las Sedes (209 encuestas)</h3>
+  <div class="hbar"><div class="hbar-label"><span>Medicamentos oportunos y seguros</span><span style="font-weight:700;font-family:monospace;">3.96</span></div><div class="hbar-track"><div class="hbar-fill" style="width:99%;background:#00B0CA;">96.7% Siempre</div></div></div>
+  <div class="hbar"><div class="hbar-label"><span>Verificación de nombre</span><span style="font-weight:700;font-family:monospace;">3.96</span></div><div class="hbar-track"><div class="hbar-fill" style="width:99%;background:#00B0CA;">97.1% Siempre</div></div></div>
+  <div class="hbar"><div class="hbar-label"><span>Se presentó y explicó función</span><span style="font-weight:700;font-family:monospace;">3.95</span></div><div class="hbar-track"><div class="hbar-fill" style="width:98.75%;background:#00B0CA;">97.6% Siempre</div></div></div>
+  <div class="hbar"><div class="hbar-label"><span>Trato respetuoso</span><span style="font-weight:700;font-family:monospace;">3.99</span></div><div class="hbar-track"><div class="hbar-fill" style="width:99.75%;background:#00B0CA;">98.6% Siempre</div></div></div>
+
+  <h3 style="margin:20px 0 12px;">Distribución de Respuestas</h3>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#00B0CA"></div>Siempre</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#BED600"></div>Usualmente</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#FFD100"></div>A veces</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#D50032"></div>Nunca</div>
+  </div>
+  <div class="sbar-row"><div class="sbar-row-label">Medicamentos</div><div class="sbar"><div class="sbar-seg" style="flex:202;background:#00B0CA;">96.7%</div><div class="sbar-seg" style="flex:6;background:#BED600;">2.9%</div><div class="sbar-seg" style="flex:1;background:#FFD100;"></div></div></div>
+  <div class="sbar-row"><div class="sbar-row-label">Verificación</div><div class="sbar"><div class="sbar-seg" style="flex:203;background:#00B0CA;">97.1%</div><div class="sbar-seg" style="flex:4;background:#BED600;">1.9%</div><div class="sbar-seg" style="flex:2;background:#FFD100;"></div></div></div>
+  <div class="sbar-row"><div class="sbar-row-label">Presentación</div><div class="sbar"><div class="sbar-seg" style="flex:204;background:#00B0CA;">97.6%</div><div class="sbar-seg" style="flex:2;background:#BED600;"></div><div class="sbar-seg" style="flex:1;background:#FFD100;"></div><div class="sbar-seg" style="flex:2;background:#D50032;"></div></div></div>
+  <div class="sbar-row"><div class="sbar-row-label">Trato respetuoso</div><div class="sbar"><div class="sbar-seg" style="flex:206;background:#00B0CA;">98.6%</div><div class="sbar-seg" style="flex:3;background:#BED600;"></div></div></div>
+</div>
+
+<!-- TAB DH -->
+<div class="tab-content tc-dh">
+  <h3 style="margin-bottom:16px;">Promedios — Doctors Hospital (79 encuestas)</h3>
+  <div class="hbar"><div class="hbar-label"><span>Medicamentos oportunos y seguros</span><span style="font-weight:700;font-family:monospace;">3.95</span></div><div class="hbar-track"><div class="hbar-fill" style="width:98.75%;background:#00B0CA;">96.2% Siempre</div></div></div>
+  <div class="hbar"><div class="hbar-label"><span>Verificación de nombre</span><span style="font-weight:700;font-family:monospace;">3.99</span></div><div class="hbar-track"><div class="hbar-fill" style="width:99.75%;background:#00B0CA;">98.7% Siempre</div></div></div>
+  <div class="hbar"><div class="hbar-label"><span>Se presentó y explicó función</span><span style="font-weight:700;font-family:monospace;">3.96</span></div><div class="hbar-track"><div class="hbar-fill" style="width:99%;background:#00B0CA;">98.7% Siempre</div></div></div>
+  <div class="hbar"><div class="hbar-label"><span>Trato respetuoso ⭐</span><span style="font-weight:700;font-family:monospace;">4.00</span></div><div class="hbar-track"><div class="hbar-fill" style="width:100%;background:#00B0CA;">100% Siempre</div></div></div>
+
+  <h3 style="margin:20px 0 12px;">Distribución de Respuestas</h3>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#00B0CA"></div>Siempre</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#BED600"></div>Usualmente</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#FFD100"></div>A veces</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#D50032"></div>Nunca</div>
+  </div>
+  <div class="sbar-row"><div class="sbar-row-label">Medicamentos</div><div class="sbar"><div class="sbar-seg" style="flex:76;background:#00B0CA;">96.2%</div><div class="sbar-seg" style="flex:2;background:#BED600;"></div><div class="sbar-seg" style="flex:1;background:#FFD100;"></div></div></div>
+  <div class="sbar-row"><div class="sbar-row-label">Verificación</div><div class="sbar"><div class="sbar-seg" style="flex:78;background:#00B0CA;">98.7%</div><div class="sbar-seg" style="flex:1;background:#BED600;"></div></div></div>
+  <div class="sbar-row"><div class="sbar-row-label">Presentación</div><div class="sbar"><div class="sbar-seg" style="flex:78;background:#00B0CA;">98.7%</div><div class="sbar-seg" style="flex:1;background:#D50032;"></div></div></div>
+  <div class="sbar-row"><div class="sbar-row-label">Trato respetuoso</div><div class="sbar"><div class="sbar-seg" style="flex:79;background:#00B0CA;">100%</div></div></div>
+</div>
+
+<!-- TAB DHE -->
+<div class="tab-content tc-dhe">
+  <h3 style="margin-bottom:16px;">Promedios — Doctors Hospital East (87 encuestas)</h3>
+  <div class="hbar"><div class="hbar-label"><span>Medicamentos oportunos y seguros</span><span style="font-weight:700;font-family:monospace;">3.98</span></div><div class="hbar-track"><div class="hbar-fill" style="width:99.5%;background:#FF6900;">97.7% Siempre</div></div></div>
+  <div class="hbar"><div class="hbar-label"><span>Verificación de nombre</span><span style="font-weight:700;font-family:monospace;">3.94</span></div><div class="hbar-track"><div class="hbar-fill" style="width:98.5%;background:#FF6900;">95.4% Siempre</div></div></div>
+  <div class="hbar"><div class="hbar-label"><span>Se presentó y explicó función</span><span style="font-weight:700;font-family:monospace;">3.95</span></div><div class="hbar-track"><div class="hbar-fill" style="width:98.75%;background:#FF6900;">97.7% Siempre</div></div></div>
+  <div class="hbar"><div class="hbar-label"><span>Trato respetuoso</span><span style="font-weight:700;font-family:monospace;">3.97</span></div><div class="hbar-track"><div class="hbar-fill" style="width:99.25%;background:#FF6900;">96.6% Siempre</div></div></div>
+
+  <h3 style="margin:20px 0 12px;">Distribución de Respuestas</h3>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#00B0CA"></div>Siempre</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#BED600"></div>Usualmente</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#FFD100"></div>A veces</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#D50032"></div>Nunca</div>
+  </div>
+  <div class="sbar-row"><div class="sbar-row-label">Medicamentos</div><div class="sbar"><div class="sbar-seg" style="flex:85;background:#00B0CA;">97.7%</div><div class="sbar-seg" style="flex:2;background:#BED600;"></div></div></div>
+  <div class="sbar-row"><div class="sbar-row-label">Verificación</div><div class="sbar"><div class="sbar-seg" style="flex:83;background:#00B0CA;">95.4%</div><div class="sbar-seg" style="flex:3;background:#BED600;"></div><div class="sbar-seg" style="flex:1;background:#FFD100;"></div></div></div>
+  <div class="sbar-row"><div class="sbar-row-label">Presentación</div><div class="sbar"><div class="sbar-seg" style="flex:85;background:#00B0CA;">97.7%</div><div class="sbar-seg" style="flex:1;background:#BED600;"></div><div class="sbar-seg" style="flex:1;background:#D50032;"></div></div></div>
+  <div class="sbar-row"><div class="sbar-row-label">Trato respetuoso</div><div class="sbar"><div class="sbar-seg" style="flex:84;background:#00B0CA;">96.6%</div><div class="sbar-seg" style="flex:3;background:#BED600;"></div></div></div>
+</div>
+
+<!-- TAB OCA -->
+<div class="tab-content tc-oca">
+  <h3 style="margin-bottom:16px;">Promedios — Hospital y Clínica OCA (43 encuestas)</h3>
+  <div class="hbar"><div class="hbar-label"><span>Medicamentos oportunos y seguros</span><span style="font-weight:700;font-family:monospace;">3.95</span></div><div class="hbar-track"><div class="hbar-fill" style="width:98.75%;background:#BED600;color:#3D3935;">95.3% Siempre</div></div></div>
+  <div class="hbar"><div class="hbar-label"><span>Verificación de nombre</span><span style="font-weight:700;font-family:monospace;">3.95</span></div><div class="hbar-track"><div class="hbar-fill" style="width:98.75%;background:#BED600;color:#3D3935;">97.7% Siempre</div></div></div>
+  <div class="hbar"><div class="hbar-label"><span>Se presentó y explicó función</span><span style="font-weight:700;font-family:monospace;">3.93</span></div><div class="hbar-track"><div class="hbar-fill" style="width:98.25%;background:#BED600;color:#3D3935;">95.3% Siempre</div></div></div>
+  <div class="hbar"><div class="hbar-label"><span>Trato respetuoso ⭐</span><span style="font-weight:700;font-family:monospace;">4.00</span></div><div class="hbar-track"><div class="hbar-fill" style="width:100%;background:#BED600;color:#3D3935;">100% Siempre</div></div></div>
+
+  <h3 style="margin:20px 0 12px;">Distribución de Respuestas</h3>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#00B0CA"></div>Siempre</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#BED600"></div>Usualmente</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#FFD100"></div>A veces</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#D50032"></div>Nunca</div>
+  </div>
+  <div class="sbar-row"><div class="sbar-row-label">Medicamentos</div><div class="sbar"><div class="sbar-seg" style="flex:41;background:#00B0CA;">95.3%</div><div class="sbar-seg" style="flex:2;background:#BED600;"></div></div></div>
+  <div class="sbar-row"><div class="sbar-row-label">Verificación</div><div class="sbar"><div class="sbar-seg" style="flex:42;background:#00B0CA;">97.7%</div><div class="sbar-seg" style="flex:1;background:#FFD100;"></div></div></div>
+  <div class="sbar-row"><div class="sbar-row-label">Presentación</div><div class="sbar"><div class="sbar-seg" style="flex:41;background:#00B0CA;">95.3%</div><div class="sbar-seg" style="flex:1;background:#BED600;"></div><div class="sbar-seg" style="flex:1;background:#FFD100;"></div></div></div>
+  <div class="sbar-row"><div class="sbar-row-label">Trato respetuoso</div><div class="sbar"><div class="sbar-seg" style="flex:43;background:#00B0CA;">100%</div></div></div>
+</div>
+
+<!-- Comparativo -->
+<div class="section-title">Comparativo entre Sedes</div>
+<div class="chart-card">
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#00B0CA"></div>DH</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#FF6900"></div>DHE</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#BED600"></div>OCA</div>
+  </div>
+  <div class="gbar-group"><div class="gbar-group-label">Medicamentos</div><div class="gbar-bars">
+    <div class="gbar-bar"><div class="gbar-bar-fill" style="width:79%;background:#00B0CA;"></div><div class="gbar-bar-val">3.95</div></div>
+    <div class="gbar-bar"><div class="gbar-bar-fill" style="width:89%;background:#FF6900;"></div><div class="gbar-bar-val">3.98</div></div>
+    <div class="gbar-bar"><div class="gbar-bar-fill" style="width:79%;background:#BED600;"></div><div class="gbar-bar-val">3.95</div></div>
+  </div></div>
+  <div class="gbar-group"><div class="gbar-group-label">Verificación</div><div class="gbar-bars">
+    <div class="gbar-bar"><div class="gbar-bar-fill" style="width:95%;background:#00B0CA;"></div><div class="gbar-bar-val">3.99</div></div>
+    <div class="gbar-bar"><div class="gbar-bar-fill" style="width:55%;background:#FF6900;"></div><div class="gbar-bar-val">3.94</div></div>
+    <div class="gbar-bar"><div class="gbar-bar-fill" style="width:79%;background:#BED600;"></div><div class="gbar-bar-val">3.95</div></div>
+  </div></div>
+  <div class="gbar-group"><div class="gbar-group-label">Presentación</div><div class="gbar-bars">
+    <div class="gbar-bar"><div class="gbar-bar-fill" style="width:85%;background:#00B0CA;"></div><div class="gbar-bar-val">3.96</div></div>
+    <div class="gbar-bar"><div class="gbar-bar-fill" style="width:75%;background:#FF6900;"></div><div class="gbar-bar-val">3.95</div></div>
+    <div class="gbar-bar"><div class="gbar-bar-fill" style="width:45%;background:#BED600;"></div><div class="gbar-bar-val">3.93</div></div>
+  </div></div>
+  <div class="gbar-group"><div class="gbar-group-label">Trato respetuoso</div><div class="gbar-bars">
+    <div class="gbar-bar"><div class="gbar-bar-fill" style="width:100%;background:#00B0CA;"></div><div class="gbar-bar-val">4.00</div></div>
+    <div class="gbar-bar"><div class="gbar-bar-fill" style="width:65%;background:#FF6900;"></div><div class="gbar-bar-val">3.97</div></div>
+    <div class="gbar-bar"><div class="gbar-bar-fill" style="width:100%;background:#BED600;"></div><div class="gbar-bar-val">4.00</div></div>
+  </div></div>
+</div>
+
+<!-- Áreas de Oportunidad -->
+<div class="section-title" style="border-left-color:#D50032;">Áreas de Oportunidad — 3 casos negativos (1.4%)</div>
+<div class="neg-card">
+  <div class="neg-sede" style="color:#00B0CA;">🏥 Doctors Hospital — 22 Sep, 2:03 PM (Turno 7AM-5PM)</div>
+  <div class="neg-text"><b>P3 = Nunca</b> · "Me explicó lo que haría, pero no se presentó por su nombre"</div>
+  <div class="neg-text">📍 Durante la administración de medicamentos o procedimientos</div>
+  <div class="neg-impact">⚠️ "Me sentí desinformado(a) sobre mi atención"</div>
+</div>
+<div class="neg-card">
+  <div class="neg-sede" style="color:#BED600;">🏥 Hospital y Clínica OCA — 22 Sep, 10:25 PM (Turno 5PM-7AM)</div>
+  <div class="neg-text"><b>P3 = A veces</b> · "Se presentó por su nombre, pero no me explicó su función"</div>
+  <div class="neg-text">📍 No sabría decir el momento exacto</div>
+  <div class="neg-impact" style="color:#FF6900;">ℹ️ "No afectó mi experiencia"</div>
+</div>
+<div class="neg-card">
+  <div class="neg-sede" style="color:#FF6900;">🏥 Doctors Hospital East — 25 Sep, 4:13 PM (Turno 7AM-5PM)</div>
+  <div class="neg-text"><b>P3 = Nunca</b> · "Hubo cambios de personal y no todos se presentaron"</div>
+  <div class="neg-text">📍 En un cambio de turno o cambio de personal</div>
+  <div class="neg-impact" style="color:#FF6900;">ℹ️ "No afectó mi experiencia"</div>
+</div>
+
+</body>
+</html>
