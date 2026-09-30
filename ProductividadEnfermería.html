@@ -1,0 +1,303 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f0f2f5;color:#3D3935}
+.dash{max-width:1120px;margin:0 auto;padding:12px}
+.hdr{background:linear-gradient(135deg,#002060 0%,#0050B5 60%,#00B0CA 100%);color:#fff;padding:18px 24px;border-radius:12px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.hdr-left{display:flex;align-items:center;gap:14px}
+.hdr-logo{height:40px;object-fit:contain}
+.hdr h1{font-size:22px;font-weight:700;letter-spacing:-0.3px}
+.hdr p{font-size:12px;opacity:0.8;margin-top:3px}
+.hi{width:44px;height:44px;background:rgba(255,255,255,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hi svg{width:26px;height:26px;fill:#BED600}
+input[name="tab"]{display:none}
+.nav{display:flex;gap:3px;margin-bottom:14px;background:#fff;border-radius:10px;padding:3px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.nav label{flex:1;text-align:center;padding:9px 6px;font-size:12px;font-weight:600;border-radius:8px;cursor:pointer;transition:all 0.15s;color:#888}
+.nav label:hover{background:#f0f2f5;color:#3D3935}
+#t1:checked~.nav label[for="t1"],#t2:checked~.nav label[for="t2"],#t3:checked~.nav label[for="t3"],#t4:checked~.nav label[for="t4"]{background:#002060;color:#fff}
+.tc{display:none}
+#t1:checked~.p1,#t2:checked~.p2,#t3:checked~.p3,#t4:checked~.p4{display:block}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:10px;margin-bottom:14px}
+.kc{background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,0.05);border-left:4px solid}
+.kl{font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#3D3935;font-weight:700}
+.kt{font-size:26px;font-weight:800;color:#002060;font-family:'SF Mono','Cascadia Code',monospace;margin:3px 0}
+.kb{display:flex;gap:8px;flex-wrap:wrap}
+.kb span{font-size:10px;font-weight:700}
+.sec{background:#fff;border-radius:10px;padding:16px 18px;box-shadow:0 1px 3px rgba(0,0,0,0.05);margin-bottom:12px}
+.sec h2{font-size:14px;font-weight:700;color:#002060;margin-bottom:2px}
+.sec .sub{font-size:11px;color:#3D3935;margin-bottom:14px;font-weight:500}
+.cw{padding-top:18px;position:relative}
+.ch{display:flex;align-items:flex-end;justify-content:space-around;gap:2px;border-bottom:2px solid #e8eaed;padding:0 0 4px 0}
+.bg{display:flex;flex-direction:column;align-items:center;flex:1}
+.bg>div:first-child{display:flex;align-items:flex-end;gap:1px;justify-content:center}
+.b{border-radius:3px 3px 0 0;position:relative;min-width:8px;display:inline-block;vertical-align:bottom;margin:0 1px}
+.v{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:7px;font-weight:700;color:#3D3935;white-space:nowrap}
+.ml{font-size:9px;font-weight:700;color:#3D3935;margin-top:5px;letter-spacing:0.03em}
+.lg{display:flex;gap:14px;justify-content:center;margin-top:10px}
+.li{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:#3D3935}
+.ld{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:750px){.g2{grid-template-columns:1fr}}
+/* Detail table */
+.dt{width:100%;border-collapse:collapse;font-size:11px;margin-top:6px}
+.dt thead th{color:#fff;background:#002060;font-weight:600;padding:7px 8px;font-size:10px;text-transform:uppercase;letter-spacing:0.03em;text-align:center;position:sticky;top:0}
+.dt thead th:first-child{text-align:left;border-radius:6px 0 0 0}
+.dt thead th:nth-child(2){text-align:left}
+.dt thead th:last-child{border-radius:0 6px 0 0}
+.dt td{padding:5px 8px;border-bottom:1px solid #f0f0f0;font-family:'SF Mono','Cascadia Code',monospace;font-size:10px;text-align:center}
+.dt .tn{font-family:system-ui,sans-serif;font-weight:700;color:#002060;text-align:left;background:#f8f9fc;font-size:11px}
+.dt .ts{font-family:system-ui,sans-serif;font-weight:700;text-align:left;font-size:10px}
+.dt .tt{font-weight:800;color:#002060;background:#f0f4ff}
+.dt .nd{color:#BBBCBC;font-style:italic}
+.dt tbody tr:hover td{background:#f5f7fa}
+/* Summary table */
+.st{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px}
+.st thead th{text-align:right;color:#fff;background:#002060;font-weight:600;padding:8px 10px;font-size:11px;text-transform:uppercase;letter-spacing:0.03em}
+.st thead th:first-child{text-align:left;border-radius:6px 0 0 0}
+.st thead th:last-child{border-radius:0 6px 0 0}
+.st td{padding:7px 10px;border-bottom:1px solid #f2f2f2;font-family:'SF Mono','Cascadia Code',monospace;font-size:11px;text-align:right}
+.st .tn{font-family:system-ui,sans-serif;font-weight:600;color:#002060;text-align:left}
+.st .tt{font-weight:800;color:#002060}
+.st tbody tr:hover td{background:#f5f7fa}
+.tw{max-height:500px;overflow-y:auto;border-radius:8px;border:1px solid #e8eaed}
+.ft{text-align:center;padding:14px;font-size:10px;color:#BBBCBC;font-weight:500}
+.sec,.kc{opacity:1}
+@media(prefers-reduced-motion:no-preference){
+.sec{animation:fu .4s ease-out both}
+.kc{animation:fu .35s ease-out both}
+.kc:nth-child(1){animation-delay:.03s}.kc:nth-child(2){animation-delay:.06s}.kc:nth-child(3){animation-delay:.09s}.kc:nth-child(4){animation-delay:.12s}.kc:nth-child(5){animation-delay:.15s}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+}
+</style>
+</head>
+<body>
+<div class="dash">
+<h1 style="font-size:1px;color:transparent">Dashboard Productividad</h1>
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="hi"><svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg></div>
+    <div><h1>Productividad de Enfermería</h1><p>Enero – Agosto</p></div>
+  </div>
+  <img class="hdr-logo" src="data:image/png;base64,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" alt="" width="388" height="96" alt="AUNA">
+</div>
+
+<input type="radio" name="tab" id="t1" checked>
+<input type="radio" name="tab" id="t2">
+<input type="radio" name="tab" id="t3">
+<input type="radio" name="tab" id="t4">
+<div class="nav">
+<label for="t1">📊 Resumen</label>
+<label for="t2">🏥 Quirúrgica</label>
+<label for="t3">🚑 Urgencias</label>
+<label for="t4">🛏️ UCI y Egresos</label>
+</div>
+
+<!-- PAGE 1: RESUMEN -->
+<div class="tc p1">
+<div class="kpis">
+<div class="kc" style="border-left-color:#00B0CA"><div class="kl">Quirófano</div><div class="kt">9,564</div><div class="kb"><span style="color:#0050B5">DH 2,973</span><span style="color:#FF6900">DHE 1,829</span><span style="color:#6B8E23">OCA 4,762</span></div></div>
+<div class="kc" style="border-left-color:#D50032"><div class="kl">Urg. Adultos</div><div class="kt">15,636</div><div class="kb"><span style="color:#0050B5">DH 5,397</span><span style="color:#FF6900">DHE 5,095</span><span style="color:#6B8E23">OCA 5,144</span></div></div>
+<div class="kc" style="border-left-color:#511E84"><div class="kl">Urg. Pediátricas</div><div class="kt">6,247</div><div class="kb"><span style="color:#0050B5">DH 1,619</span><span style="color:#FF6900">DHE 3,366</span><span style="color:#6B8E23">OCA 1,262</span></div></div>
+<div class="kc" style="border-left-color:#3D3935"><div class="kl">Egresos Hosp.</div><div class="kt">16,009</div><div class="kb"><span style="color:#0050B5">DH 5,595</span><span style="color:#FF6900">DHE 3,909</span><span style="color:#6B8E23">OCA 6,505</span></div></div>
+<div class="kc" style="border-left-color:#FF6900"><div class="kl">Ingresos UCIA</div><div class="kt">1,322</div><div class="kb"><span style="color:#0050B5">DH 530</span><span style="color:#FF6900">DHE 306</span><span style="color:#6B8E23">OCA 486</span></div></div>
+</div>
+
+<div class="sec">
+<h2>Desglose Mensual por Servicio y Sede</h2>
+<div class="sub">Enero – Agosto · Todas las sedes</div>
+<div class="tw">
+<table class="dt">
+<thead><tr><th>Servicio</th><th>Sede</th><th>ENE</th><th>FEB</th><th>MAR</th><th>ABR</th><th>MAY</th><th>JUN</th><th>JUL</th><th>AGO</th><th>Total</th></tr></thead>
+<tbody>
+<tr><td class="tn" rowspan="3">Quirófano</td><td class="ts" style="color:#0050B5">DH</td><td>330</td><td>334</td><td>382</td><td>357</td><td>378</td><td>390</td><td>390</td><td>412</td><td class="tt">2,973</td></tr>
+<tr><td class="ts" style="color:#FF6900">DHE</td><td>202</td><td>193</td><td>225</td><td>198</td><td>214</td><td>254</td><td>289</td><td>254</td><td class="tt">1,829</td></tr>
+<tr><td class="ts" style="color:#6B8E23">OCA</td><td>544</td><td>568</td><td>608</td><td>564</td><td>555</td><td>637</td><td>653</td><td>633</td><td class="tt">4,762</td></tr>
+<tr><td class="tn">Cx. Ambulatoria</td><td class="ts" style="color:#0050B5">DH</td><td>119</td><td>100</td><td>152</td><td>122</td><td>145</td><td>187</td><td>196</td><td>180</td><td class="tt">1,201</td></tr>
+<tr><td class="tn" rowspan="3">Obstetricia</td><td class="ts" style="color:#0050B5">DH</td><td>136</td><td>117</td><td>167</td><td>146</td><td>132</td><td>207</td><td>177</td><td>205</td><td class="tt">1,287</td></tr>
+<tr><td class="ts" style="color:#FF6900">DHE</td><td>126</td><td>87</td><td>130</td><td>100</td><td>121</td><td>160</td><td>154</td><td>151</td><td class="tt">1,029</td></tr>
+<tr><td class="ts" style="color:#6B8E23">OCA</td><td>136</td><td>107</td><td>112</td><td>117</td><td>117</td><td>121</td><td>158</td><td>176</td><td class="tt">1,044</td></tr>
+<tr><td class="tn" rowspan="3">Urg. Adultos</td><td class="ts" style="color:#0050B5">DH</td><td>690</td><td>634</td><td>647</td><td>629</td><td>647</td><td>665</td><td>729</td><td>756</td><td class="tt">5,397</td></tr>
+<tr><td class="ts" style="color:#FF6900">DHE</td><td>631</td><td>574</td><td>628</td><td>558</td><td>673</td><td>649</td><td>708</td><td>674</td><td class="tt">5,095</td></tr>
+<tr><td class="ts" style="color:#6B8E23">OCA</td><td>679</td><td>577</td><td>650</td><td>639</td><td>647</td><td>635</td><td>656</td><td>661</td><td class="tt">5,144</td></tr>
+<tr><td class="tn" rowspan="3">Urg. Pediátricas</td><td class="ts" style="color:#0050B5">DH</td><td>204</td><td>203</td><td>261</td><td>202</td><td>240</td><td>186</td><td>162</td><td>161</td><td class="tt">1,619</td></tr>
+<tr><td class="ts" style="color:#FF6900">DHE</td><td>382</td><td>440</td><td>451</td><td>390</td><td>463</td><td>499</td><td>368</td><td>373</td><td class="tt">3,366</td></tr>
+<tr><td class="ts" style="color:#6B8E23">OCA</td><td>172</td><td>173</td><td>189</td><td>131</td><td>176</td><td>168</td><td>133</td><td>120</td><td class="tt">1,262</td></tr>
+<tr><td class="tn" rowspan="3">Ingresos UCIA</td><td class="ts" style="color:#0050B5">DH</td><td>63</td><td>71</td><td>53</td><td>61</td><td>69</td><td>77</td><td>71</td><td>65</td><td class="tt">530</td></tr>
+<tr><td class="ts" style="color:#FF6900">DHE</td><td>35</td><td>30</td><td>42</td><td>35</td><td>47</td><td>42</td><td>39</td><td>36</td><td class="tt">306</td></tr>
+<tr><td class="ts" style="color:#6B8E23">OCA</td><td>83</td><td>49</td><td>68</td><td>62</td><td>58</td><td>67</td><td>49</td><td>50</td><td class="tt">486</td></tr>
+<tr><td class="tn" rowspan="3">Ingresos UCIN</td><td class="ts" style="color:#0050B5">DH</td><td>4</td><td>5</td><td>10</td><td>10</td><td>11</td><td>8</td><td>9</td><td>12</td><td class="tt">69</td></tr>
+<tr><td class="ts" style="color:#FF6900">DHE</td><td>6</td><td>3</td><td>9</td><td>4</td><td>7</td><td>7</td><td>9</td><td>6</td><td class="tt">51</td></tr>
+<tr><td class="ts" style="color:#6B8E23">OCA</td><td>12</td><td>6</td><td>9</td><td>6</td><td>6</td><td>10</td><td>14</td><td>6</td><td class="tt">69</td></tr>
+<tr><td class="tn" rowspan="3">Ingresos UCIP</td><td class="ts" style="color:#0050B5">DH</td><td>1</td><td>4</td><td>3</td><td>0</td><td>2</td><td>5</td><td>2</td><td>1</td><td class="tt">18</td></tr>
+<tr><td class="ts" style="color:#FF6900">DHE</td><td>1</td><td>5</td><td>2</td><td>3</td><td>4</td><td>3</td><td>2</td><td>2</td><td class="tt">22</td></tr>
+<tr><td class="ts" style="color:#6B8E23">OCA</td><td>2</td><td>4</td><td>4</td><td>2</td><td>1</td><td>2</td><td>4</td><td>2</td><td class="tt">21</td></tr>
+<tr><td class="tn" rowspan="3">Egresos Hosp.</td><td class="ts" style="color:#0050B5">DH</td><td>766</td><td>711</td><td>817</td><td>794</td><td>810</td><td>874</td><td>823</td><td class="nd">N/D</td><td class="tt">5,595</td></tr>
+<tr><td class="ts" style="color:#FF6900">DHE</td><td>432</td><td>459</td><td>479</td><td>420</td><td>489</td><td>552</td><td>551</td><td>527</td><td class="tt">3,909</td></tr>
+<tr><td class="ts" style="color:#6B8E23">OCA</td><td>768</td><td>749</td><td>834</td><td>817</td><td>794</td><td>778</td><td>908</td><td>857</td><td class="tt">6,505</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- PAGE 2: QUIRÚRGICA -->
+<div class="tc p2">
+<div class="sec">
+<h2>Procedimientos de Quirófano por Mes</h2>
+<div class="sub">Comparativa mensual por sede · Enero – Agosto</div>
+<div class="cw"><div class="ch" style="height:160px;">
+<div class="bg"><div><div class="b" style="height:72px;background:#0050B5;width:14px;"><span class="v">330</span></div><div class="b" style="height:44px;background:#FF6900;width:14px;"><span class="v">202</span></div><div class="b" style="height:119px;background:#BED600;width:14px;"><span class="v">544</span></div></div><div class="ml">ENE</div></div>
+<div class="bg"><div><div class="b" style="height:73px;background:#0050B5;width:14px;"><span class="v">334</span></div><div class="b" style="height:42px;background:#FF6900;width:14px;"><span class="v">193</span></div><div class="b" style="height:124px;background:#BED600;width:14px;"><span class="v">568</span></div></div><div class="ml">FEB</div></div>
+<div class="bg"><div><div class="b" style="height:83px;background:#0050B5;width:14px;"><span class="v">382</span></div><div class="b" style="height:49px;background:#FF6900;width:14px;"><span class="v">225</span></div><div class="b" style="height:132px;background:#BED600;width:14px;"><span class="v">608</span></div></div><div class="ml">MAR</div></div>
+<div class="bg"><div><div class="b" style="height:78px;background:#0050B5;width:14px;"><span class="v">357</span></div><div class="b" style="height:43px;background:#FF6900;width:14px;"><span class="v">198</span></div><div class="b" style="height:123px;background:#BED600;width:14px;"><span class="v">564</span></div></div><div class="ml">ABR</div></div>
+<div class="bg"><div><div class="b" style="height:82px;background:#0050B5;width:14px;"><span class="v">378</span></div><div class="b" style="height:47px;background:#FF6900;width:14px;"><span class="v">214</span></div><div class="b" style="height:121px;background:#BED600;width:14px;"><span class="v">555</span></div></div><div class="ml">MAY</div></div>
+<div class="bg"><div><div class="b" style="height:85px;background:#0050B5;width:14px;"><span class="v">390</span></div><div class="b" style="height:55px;background:#FF6900;width:14px;"><span class="v">254</span></div><div class="b" style="height:139px;background:#BED600;width:14px;"><span class="v">637</span></div></div><div class="ml">JUN</div></div>
+<div class="bg"><div><div class="b" style="height:85px;background:#0050B5;width:14px;"><span class="v">390</span></div><div class="b" style="height:63px;background:#FF6900;width:14px;"><span class="v">289</span></div><div class="b" style="height:142px;background:#BED600;width:14px;"><span class="v">653</span></div></div><div class="ml">JUL</div></div>
+<div class="bg"><div><div class="b" style="height:90px;background:#0050B5;width:14px;"><span class="v">412</span></div><div class="b" style="height:55px;background:#FF6900;width:14px;"><span class="v">254</span></div><div class="b" style="height:138px;background:#BED600;width:14px;"><span class="v">633</span></div></div><div class="ml">AGO</div></div>
+</div></div>
+<div class="lg"><div class="li"><span class="ld" style="background:#0050B5"></span>DH</div><div class="li"><span class="ld" style="background:#FF6900"></span>DHE</div><div class="li"><span class="ld" style="background:#BED600"></span>OCA</div></div>
+</div>
+<div class="g2">
+<div class="sec">
+<h2>Obstetricia por Mes</h2>
+<div class="sub">Atenciones por sede</div>
+<div class="cw"><div class="ch" style="height:140px;">
+<div class="bg"><div><div class="b" style="height:80px;background:#0050B5;width:12px;"><span class="v">136</span></div><div class="b" style="height:74px;background:#FF6900;width:12px;"><span class="v">126</span></div><div class="b" style="height:80px;background:#BED600;width:12px;"><span class="v">136</span></div></div><div class="ml">ENE</div></div>
+<div class="bg"><div><div class="b" style="height:69px;background:#0050B5;width:12px;"><span class="v">117</span></div><div class="b" style="height:51px;background:#FF6900;width:12px;"><span class="v">87</span></div><div class="b" style="height:63px;background:#BED600;width:12px;"><span class="v">107</span></div></div><div class="ml">FEB</div></div>
+<div class="bg"><div><div class="b" style="height:98px;background:#0050B5;width:12px;"><span class="v">167</span></div><div class="b" style="height:76px;background:#FF6900;width:12px;"><span class="v">130</span></div><div class="b" style="height:66px;background:#BED600;width:12px;"><span class="v">112</span></div></div><div class="ml">MAR</div></div>
+<div class="bg"><div><div class="b" style="height:86px;background:#0050B5;width:12px;"><span class="v">146</span></div><div class="b" style="height:59px;background:#FF6900;width:12px;"><span class="v">100</span></div><div class="b" style="height:69px;background:#BED600;width:12px;"><span class="v">117</span></div></div><div class="ml">ABR</div></div>
+<div class="bg"><div><div class="b" style="height:78px;background:#0050B5;width:12px;"><span class="v">132</span></div><div class="b" style="height:71px;background:#FF6900;width:12px;"><span class="v">121</span></div><div class="b" style="height:69px;background:#BED600;width:12px;"><span class="v">117</span></div></div><div class="ml">MAY</div></div>
+<div class="bg"><div><div class="b" style="height:122px;background:#0050B5;width:12px;"><span class="v">207</span></div><div class="b" style="height:94px;background:#FF6900;width:12px;"><span class="v">160</span></div><div class="b" style="height:71px;background:#BED600;width:12px;"><span class="v">121</span></div></div><div class="ml">JUN</div></div>
+<div class="bg"><div><div class="b" style="height:104px;background:#0050B5;width:12px;"><span class="v">177</span></div><div class="b" style="height:91px;background:#FF6900;width:12px;"><span class="v">154</span></div><div class="b" style="height:93px;background:#BED600;width:12px;"><span class="v">158</span></div></div><div class="ml">JUL</div></div>
+<div class="bg"><div><div class="b" style="height:121px;background:#0050B5;width:12px;"><span class="v">205</span></div><div class="b" style="height:89px;background:#FF6900;width:12px;"><span class="v">151</span></div><div class="b" style="height:103px;background:#BED600;width:12px;"><span class="v">176</span></div></div><div class="ml">AGO</div></div>
+</div></div>
+<div class="lg"><div class="li"><span class="ld" style="background:#0050B5"></span>DH</div><div class="li"><span class="ld" style="background:#FF6900"></span>DHE</div><div class="li"><span class="ld" style="background:#BED600"></span>OCA</div></div>
+</div>
+<div class="sec">
+<h2>Cx. Ambulatoria por Mes</h2>
+<div class="sub">Solo sede DH</div>
+<div class="cw"><div class="ch" style="height:130px;">
+<div class="bg"><div><div class="b" style="height:68px;background:#0050B5;width:26px;"><span class="v">119</span></div></div><div class="ml">ENE</div></div>
+<div class="bg"><div><div class="b" style="height:57px;background:#0050B5;width:26px;"><span class="v">100</span></div></div><div class="ml">FEB</div></div>
+<div class="bg"><div><div class="b" style="height:87px;background:#0050B5;width:26px;"><span class="v">152</span></div></div><div class="ml">MAR</div></div>
+<div class="bg"><div><div class="b" style="height:70px;background:#0050B5;width:26px;"><span class="v">122</span></div></div><div class="ml">ABR</div></div>
+<div class="bg"><div><div class="b" style="height:83px;background:#0050B5;width:26px;"><span class="v">145</span></div></div><div class="ml">MAY</div></div>
+<div class="bg"><div><div class="b" style="height:107px;background:#0050B5;width:26px;"><span class="v">187</span></div></div><div class="ml">JUN</div></div>
+<div class="bg"><div><div class="b" style="height:112px;background:#0050B5;width:26px;"><span class="v">196</span></div></div><div class="ml">JUL</div></div>
+<div class="bg"><div><div class="b" style="height:103px;background:#0050B5;width:26px;"><span class="v">180</span></div></div><div class="ml">AGO</div></div>
+</div></div>
+<div class="lg"><div class="li"><span class="ld" style="background:#0050B5"></span>DH</div></div>
+</div>
+</div>
+</div>
+
+<!-- PAGE 3: URGENCIAS -->
+<div class="tc p3">
+<div class="sec">
+<h2>Urgencias Adultos por Mes</h2>
+<div class="sub">Atenciones mensuales por sede</div>
+<div class="cw"><div class="ch" style="height:160px;">
+<div class="bg"><div><div class="b" style="height:130px;background:#0050B5;width:14px;"><span class="v">690</span></div><div class="b" style="height:119px;background:#FF6900;width:14px;"><span class="v">631</span></div><div class="b" style="height:128px;background:#BED600;width:14px;"><span class="v">679</span></div></div><div class="ml">ENE</div></div>
+<div class="bg"><div><div class="b" style="height:119px;background:#0050B5;width:14px;"><span class="v">634</span></div><div class="b" style="height:108px;background:#FF6900;width:14px;"><span class="v">574</span></div><div class="b" style="height:109px;background:#BED600;width:14px;"><span class="v">577</span></div></div><div class="ml">FEB</div></div>
+<div class="bg"><div><div class="b" style="height:122px;background:#0050B5;width:14px;"><span class="v">647</span></div><div class="b" style="height:118px;background:#FF6900;width:14px;"><span class="v">628</span></div><div class="b" style="height:122px;background:#BED600;width:14px;"><span class="v">650</span></div></div><div class="ml">MAR</div></div>
+<div class="bg"><div><div class="b" style="height:118px;background:#0050B5;width:14px;"><span class="v">629</span></div><div class="b" style="height:105px;background:#FF6900;width:14px;"><span class="v">558</span></div><div class="b" style="height:120px;background:#BED600;width:14px;"><span class="v">639</span></div></div><div class="ml">ABR</div></div>
+<div class="bg"><div><div class="b" style="height:122px;background:#0050B5;width:14px;"><span class="v">647</span></div><div class="b" style="height:127px;background:#FF6900;width:14px;"><span class="v">673</span></div><div class="b" style="height:122px;background:#BED600;width:14px;"><span class="v">647</span></div></div><div class="ml">MAY</div></div>
+<div class="bg"><div><div class="b" style="height:125px;background:#0050B5;width:14px;"><span class="v">665</span></div><div class="b" style="height:122px;background:#FF6900;width:14px;"><span class="v">649</span></div><div class="b" style="height:119px;background:#BED600;width:14px;"><span class="v">635</span></div></div><div class="ml">JUN</div></div>
+<div class="bg"><div><div class="b" style="height:137px;background:#0050B5;width:14px;"><span class="v">729</span></div><div class="b" style="height:133px;background:#FF6900;width:14px;"><span class="v">708</span></div><div class="b" style="height:123px;background:#BED600;width:14px;"><span class="v">656</span></div></div><div class="ml">JUL</div></div>
+<div class="bg"><div><div class="b" style="height:142px;background:#0050B5;width:14px;"><span class="v">756</span></div><div class="b" style="height:127px;background:#FF6900;width:14px;"><span class="v">674</span></div><div class="b" style="height:124px;background:#BED600;width:14px;"><span class="v">661</span></div></div><div class="ml">AGO</div></div>
+</div></div>
+<div class="lg"><div class="li"><span class="ld" style="background:#0050B5"></span>DH</div><div class="li"><span class="ld" style="background:#FF6900"></span>DHE</div><div class="li"><span class="ld" style="background:#BED600"></span>OCA</div></div>
+</div>
+<div class="sec">
+<h2>Urgencias Pediátricas por Mes</h2>
+<div class="sub">Atenciones mensuales por sede</div>
+<div class="cw"><div class="ch" style="height:160px;">
+<div class="bg"><div><div class="b" style="height:58px;background:#0050B5;width:14px;"><span class="v">204</span></div><div class="b" style="height:109px;background:#FF6900;width:14px;"><span class="v">382</span></div><div class="b" style="height:49px;background:#BED600;width:14px;"><span class="v">172</span></div></div><div class="ml">ENE</div></div>
+<div class="bg"><div><div class="b" style="height:58px;background:#0050B5;width:14px;"><span class="v">203</span></div><div class="b" style="height:125px;background:#FF6900;width:14px;"><span class="v">440</span></div><div class="b" style="height:49px;background:#BED600;width:14px;"><span class="v">173</span></div></div><div class="ml">FEB</div></div>
+<div class="bg"><div><div class="b" style="height:74px;background:#0050B5;width:14px;"><span class="v">261</span></div><div class="b" style="height:128px;background:#FF6900;width:14px;"><span class="v">451</span></div><div class="b" style="height:54px;background:#BED600;width:14px;"><span class="v">189</span></div></div><div class="ml">MAR</div></div>
+<div class="bg"><div><div class="b" style="height:57px;background:#0050B5;width:14px;"><span class="v">202</span></div><div class="b" style="height:111px;background:#FF6900;width:14px;"><span class="v">390</span></div><div class="b" style="height:37px;background:#BED600;width:14px;"><span class="v">131</span></div></div><div class="ml">ABR</div></div>
+<div class="bg"><div><div class="b" style="height:68px;background:#0050B5;width:14px;"><span class="v">240</span></div><div class="b" style="height:132px;background:#FF6900;width:14px;"><span class="v">463</span></div><div class="b" style="height:50px;background:#BED600;width:14px;"><span class="v">176</span></div></div><div class="ml">MAY</div></div>
+<div class="bg"><div><div class="b" style="height:53px;background:#0050B5;width:14px;"><span class="v">186</span></div><div class="b" style="height:142px;background:#FF6900;width:14px;"><span class="v">499</span></div><div class="b" style="height:48px;background:#BED600;width:14px;"><span class="v">168</span></div></div><div class="ml">JUN</div></div>
+<div class="bg"><div><div class="b" style="height:46px;background:#0050B5;width:14px;"><span class="v">162</span></div><div class="b" style="height:105px;background:#FF6900;width:14px;"><span class="v">368</span></div><div class="b" style="height:38px;background:#BED600;width:14px;"><span class="v">133</span></div></div><div class="ml">JUL</div></div>
+<div class="bg"><div><div class="b" style="height:46px;background:#0050B5;width:14px;"><span class="v">161</span></div><div class="b" style="height:106px;background:#FF6900;width:14px;"><span class="v">373</span></div><div class="b" style="height:34px;background:#BED600;width:14px;"><span class="v">120</span></div></div><div class="ml">AGO</div></div>
+</div></div>
+<div class="lg"><div class="li"><span class="ld" style="background:#0050B5"></span>DH</div><div class="li"><span class="ld" style="background:#FF6900"></span>DHE</div><div class="li"><span class="ld" style="background:#BED600"></span>OCA</div></div>
+</div>
+<div class="sec">
+<h2>Total Urgencias (Adultos + Pediátricas) por Mes</h2>
+<div class="sub">Suma de todas las atenciones de urgencias por sede</div>
+<div class="cw"><div class="ch" style="height:160px;">
+<div class="bg"><div><div class="b" style="height:111px;background:#0050B5;width:14px;"><span class="v">894</span></div><div class="b" style="height:126px;background:#FF6900;width:14px;"><span class="v">1,013</span></div><div class="b" style="height:106px;background:#BED600;width:14px;"><span class="v">851</span></div></div><div class="ml">ENE</div></div>
+<div class="bg"><div><div class="b" style="height:104px;background:#0050B5;width:14px;"><span class="v">837</span></div><div class="b" style="height:126px;background:#FF6900;width:14px;"><span class="v">1,014</span></div><div class="b" style="height:93px;background:#BED600;width:14px;"><span class="v">750</span></div></div><div class="ml">FEB</div></div>
+<div class="bg"><div><div class="b" style="height:113px;background:#0050B5;width:14px;"><span class="v">908</span></div><div class="b" style="height:134px;background:#FF6900;width:14px;"><span class="v">1,079</span></div><div class="b" style="height:104px;background:#BED600;width:14px;"><span class="v">839</span></div></div><div class="ml">MAR</div></div>
+<div class="bg"><div><div class="b" style="height:103px;background:#0050B5;width:14px;"><span class="v">831</span></div><div class="b" style="height:118px;background:#FF6900;width:14px;"><span class="v">948</span></div><div class="b" style="height:96px;background:#BED600;width:14px;"><span class="v">770</span></div></div><div class="ml">ABR</div></div>
+<div class="bg"><div><div class="b" style="height:110px;background:#0050B5;width:14px;"><span class="v">887</span></div><div class="b" style="height:141px;background:#FF6900;width:14px;"><span class="v">1,136</span></div><div class="b" style="height:102px;background:#BED600;width:14px;"><span class="v">823</span></div></div><div class="ml">MAY</div></div>
+<div class="bg"><div><div class="b" style="height:106px;background:#0050B5;width:14px;"><span class="v">851</span></div><div class="b" style="height:142px;background:#FF6900;width:14px;"><span class="v">1,148</span></div><div class="b" style="height:100px;background:#BED600;width:14px;"><span class="v">803</span></div></div><div class="ml">JUN</div></div>
+<div class="bg"><div><div class="b" style="height:111px;background:#0050B5;width:14px;"><span class="v">891</span></div><div class="b" style="height:134px;background:#FF6900;width:14px;"><span class="v">1,076</span></div><div class="b" style="height:98px;background:#BED600;width:14px;"><span class="v">789</span></div></div><div class="ml">JUL</div></div>
+<div class="bg"><div><div class="b" style="height:114px;background:#0050B5;width:14px;"><span class="v">917</span></div><div class="b" style="height:130px;background:#FF6900;width:14px;"><span class="v">1,047</span></div><div class="b" style="height:97px;background:#BED600;width:14px;"><span class="v">781</span></div></div><div class="ml">AGO</div></div>
+</div></div>
+<div class="lg"><div class="li"><span class="ld" style="background:#0050B5"></span>DH</div><div class="li"><span class="ld" style="background:#FF6900"></span>DHE</div><div class="li"><span class="ld" style="background:#BED600"></span>OCA</div></div>
+</div>
+</div>
+
+<!-- PAGE 4: UCI Y EGRESOS -->
+<div class="tc p4">
+<div class="sec">
+<h2>Ingresos UCIA por Mes</h2>
+<div class="sub">Unidad de Cuidados Intensivos Adultos · Comparativa por sede</div>
+<div class="cw"><div class="ch" style="height:150px;">
+<div class="bg"><div><div class="b" style="height:100px;background:#0050B5;width:14px;"><span class="v">63</span></div><div class="b" style="height:56px;background:#FF6900;width:14px;"><span class="v">35</span></div><div class="b" style="height:132px;background:#BED600;width:14px;"><span class="v">83</span></div></div><div class="ml">ENE</div></div>
+<div class="bg"><div><div class="b" style="height:113px;background:#0050B5;width:14px;"><span class="v">71</span></div><div class="b" style="height:48px;background:#FF6900;width:14px;"><span class="v">30</span></div><div class="b" style="height:78px;background:#BED600;width:14px;"><span class="v">49</span></div></div><div class="ml">FEB</div></div>
+<div class="bg"><div><div class="b" style="height:84px;background:#0050B5;width:14px;"><span class="v">53</span></div><div class="b" style="height:67px;background:#FF6900;width:14px;"><span class="v">42</span></div><div class="b" style="height:108px;background:#BED600;width:14px;"><span class="v">68</span></div></div><div class="ml">MAR</div></div>
+<div class="bg"><div><div class="b" style="height:97px;background:#0050B5;width:14px;"><span class="v">61</span></div><div class="b" style="height:56px;background:#FF6900;width:14px;"><span class="v">35</span></div><div class="b" style="height:99px;background:#BED600;width:14px;"><span class="v">62</span></div></div><div class="ml">ABR</div></div>
+<div class="bg"><div><div class="b" style="height:110px;background:#0050B5;width:14px;"><span class="v">69</span></div><div class="b" style="height:75px;background:#FF6900;width:14px;"><span class="v">47</span></div><div class="b" style="height:92px;background:#BED600;width:14px;"><span class="v">58</span></div></div><div class="ml">MAY</div></div>
+<div class="bg"><div><div class="b" style="height:122px;background:#0050B5;width:14px;"><span class="v">77</span></div><div class="b" style="height:67px;background:#FF6900;width:14px;"><span class="v">42</span></div><div class="b" style="height:106px;background:#BED600;width:14px;"><span class="v">67</span></div></div><div class="ml">JUN</div></div>
+<div class="bg"><div><div class="b" style="height:113px;background:#0050B5;width:14px;"><span class="v">71</span></div><div class="b" style="height:62px;background:#FF6900;width:14px;"><span class="v">39</span></div><div class="b" style="height:78px;background:#BED600;width:14px;"><span class="v">49</span></div></div><div class="ml">JUL</div></div>
+<div class="bg"><div><div class="b" style="height:103px;background:#0050B5;width:14px;"><span class="v">65</span></div><div class="b" style="height:57px;background:#FF6900;width:14px;"><span class="v">36</span></div><div class="b" style="height:79px;background:#BED600;width:14px;"><span class="v">50</span></div></div><div class="ml">AGO</div></div>
+</div></div>
+<div class="lg"><div class="li"><span class="ld" style="background:#0050B5"></span>DH</div><div class="li"><span class="ld" style="background:#FF6900"></span>DHE</div><div class="li"><span class="ld" style="background:#BED600"></span>OCA</div></div>
+</div>
+<div class="g2">
+<div class="sec">
+<h2>Ingresos UCIN por Mes</h2>
+<div class="sub">UCI Neonatal por sede</div>
+<div class="cw"><div class="ch" style="height:120px;">
+<div class="bg"><div><div class="b" style="height:29px;background:#0050B5;width:12px;"><span class="v">4</span></div><div class="b" style="height:44px;background:#FF6900;width:12px;"><span class="v">6</span></div><div class="b" style="height:87px;background:#BED600;width:12px;"><span class="v">12</span></div></div><div class="ml">ENE</div></div>
+<div class="bg"><div><div class="b" style="height:36px;background:#0050B5;width:12px;"><span class="v">5</span></div><div class="b" style="height:22px;background:#FF6900;width:12px;"><span class="v">3</span></div><div class="b" style="height:44px;background:#BED600;width:12px;"><span class="v">6</span></div></div><div class="ml">FEB</div></div>
+<div class="bg"><div><div class="b" style="height:73px;background:#0050B5;width:12px;"><span class="v">10</span></div><div class="b" style="height:65px;background:#FF6900;width:12px;"><span class="v">9</span></div><div class="b" style="height:65px;background:#BED600;width:12px;"><span class="v">9</span></div></div><div class="ml">MAR</div></div>
+<div class="bg"><div><div class="b" style="height:73px;background:#0050B5;width:12px;"><span class="v">10</span></div><div class="b" style="height:29px;background:#FF6900;width:12px;"><span class="v">4</span></div><div class="b" style="height:44px;background:#BED600;width:12px;"><span class="v">6</span></div></div><div class="ml">ABR</div></div>
+<div class="bg"><div><div class="b" style="height:80px;background:#0050B5;width:12px;"><span class="v">11</span></div><div class="b" style="height:51px;background:#FF6900;width:12px;"><span class="v">7</span></div><div class="b" style="height:44px;background:#BED600;width:12px;"><span class="v">6</span></div></div><div class="ml">MAY</div></div>
+<div class="bg"><div><div class="b" style="height:58px;background:#0050B5;width:12px;"><span class="v">8</span></div><div class="b" style="height:51px;background:#FF6900;width:12px;"><span class="v">7</span></div><div class="b" style="height:73px;background:#BED600;width:12px;"><span class="v">10</span></div></div><div class="ml">JUN</div></div>
+<div class="bg"><div><div class="b" style="height:65px;background:#0050B5;width:12px;"><span class="v">9</span></div><div class="b" style="height:65px;background:#FF6900;width:12px;"><span class="v">9</span></div><div class="b" style="height:102px;background:#BED600;width:12px;"><span class="v">14</span></div></div><div class="ml">JUL</div></div>
+<div class="bg"><div><div class="b" style="height:87px;background:#0050B5;width:12px;"><span class="v">12</span></div><div class="b" style="height:44px;background:#FF6900;width:12px;"><span class="v">6</span></div><div class="b" style="height:44px;background:#BED600;width:12px;"><span class="v">6</span></div></div><div class="ml">AGO</div></div>
+</div></div>
+<div class="lg"><div class="li"><span class="ld" style="background:#0050B5"></span>DH</div><div class="li"><span class="ld" style="background:#FF6900"></span>DHE</div><div class="li"><span class="ld" style="background:#BED600"></span>OCA</div></div>
+</div>
+<div class="sec">
+<h2>Ingresos UCIP por Mes</h2>
+<div class="sub">UCI Pediátrica por sede</div>
+<div class="cw"><div class="ch" style="height:100px;">
+<div class="bg"><div><div class="b" style="height:16px;background:#0050B5;width:12px;"><span class="v">1</span></div><div class="b" style="height:16px;background:#FF6900;width:12px;"><span class="v">1</span></div><div class="b" style="height:33px;background:#BED600;width:12px;"><span class="v">2</span></div></div><div class="ml">ENE</div></div>
+<div class="bg"><div><div class="b" style="height:66px;background:#0050B5;width:12px;"><span class="v">4</span></div><div class="b" style="height:82px;background:#FF6900;width:12px;"><span class="v">5</span></div><div class="b" style="height:66px;background:#BED600;width:12px;"><span class="v">4</span></div></div><div class="ml">FEB</div></div>
+<div class="bg"><div><div class="b" style="height:49px;background:#0050B5;width:12px;"><span class="v">3</span></div><div class="b" style="height:33px;background:#FF6900;width:12px;"><span class="v">2</span></div><div class="b" style="height:66px;background:#BED600;width:12px;"><span class="v">4</span></div></div><div class="ml">MAR</div></div>
+<div class="bg"><div><div class="b" style="height:2px;background:#0050B5;width:12px;"><span class="v">0</span></div><div class="b" style="height:49px;background:#FF6900;width:12px;"><span class="v">3</span></div><div class="b" style="height:33px;background:#BED600;width:12px;"><span class="v">2</span></div></div><div class="ml">ABR</div></div>
+<div class="bg"><div><div class="b" style="height:33px;background:#0050B5;width:12px;"><span class="v">2</span></div><div class="b" style="height:66px;background:#FF6900;width:12px;"><span class="v">4</span></div><div class="b" style="height:16px;background:#BED600;width:12px;"><span class="v">1</span></div></div><div class="ml">MAY</div></div>
+<div class="bg"><div><div class="b" style="height:82px;background:#0050B5;width:12px;"><span class="v">5</span></div><div class="b" style="height:49px;background:#FF6900;width:12px;"><span class="v">3</span></div><div class="b" style="height:33px;background:#BED600;width:12px;"><span class="v">2</span></div></div><div class="ml">JUN</div></div>
+<div class="bg"><div><div class="b" style="height:33px;background:#0050B5;width:12px;"><span class="v">2</span></div><div class="b" style="height:33px;background:#FF6900;width:12px;"><span class="v">2</span></div><div class="b" style="height:66px;background:#BED600;width:12px;"><span class="v">4</span></div></div><div class="ml">JUL</div></div>
+<div class="bg"><div><div class="b" style="height:16px;background:#0050B5;width:12px;"><span class="v">1</span></div><div class="b" style="height:33px;background:#FF6900;width:12px;"><span class="v">2</span></div><div class="b" style="height:33px;background:#BED600;width:12px;"><span class="v">2</span></div></div><div class="ml">AGO</div></div>
+</div></div>
+<div class="lg"><div class="li"><span class="ld" style="background:#0050B5"></span>DH</div><div class="li"><span class="ld" style="background:#FF6900"></span>DHE</div><div class="li"><span class="ld" style="background:#BED600"></span>OCA</div></div>
+</div>
+</div>
+<div class="sec">
+<h2>Egresos Hospitalización por Mes</h2>
+<div class="sub">Total de egresos por sede · DH Agosto sin dato disponible</div>
+<div class="cw"><div class="ch" style="height:160px;">
+<div class="bg"><div><div class="b" style="height:120px;background:#0050B5;width:14px;"><span class="v">766</span></div><div class="b" style="height:68px;background:#FF6900;width:14px;"><span class="v">432</span></div><div class="b" style="height:120px;background:#BED600;width:14px;"><span class="v">768</span></div></div><div class="ml">ENE</div></div>
+<div class="bg"><div><div class="b" style="height:111px;background:#0050B5;width:14px;"><span class="v">711</span></div><div class="b" style="height:72px;background:#FF6900;width:14px;"><span class="v">459</span></div><div class="b" style="height:117px;background:#BED600;width:14px;"><span class="v">749</span></div></div><div class="ml">FEB</div></div>
+<div class="bg"><div><div class="b" style="height:128px;background:#0050B5;width:14px;"><span class="v">817
